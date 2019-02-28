@@ -1,0 +1,72 @@
+/*
+
+
+# struct
+
+struct {
+  tipo variavel;
+  ...
+  tipo variavel;
+} ;
+
+
+struct Data
+{
+  
+  int a,b;
+
+} x, y;
+
+
+x.a = 10
+y = x;
+
+cout << x << ' ' << y;
+
+
+main {
+
+  struct Data au, bo;
+
+
+  au.a = 66;
+  bo.b = 888;
+
+  aux = bo;
+
+  cout << aux.b;
+}
+
+
+----////=
+
+typedef struct Data {
+
+  char dia;
+  char mes;
+  int ano;
+} Data;
+
+typedef struct aniversario {
+  char nome[20];
+  Data nascimento;
+} Aniversario;
+
+
+main {
+
+  Aniversario alguem;
+
+  cin.getline(alguem.nome);
+  cout << alguem.nome;
+
+  cin >> alguem.nascimento.dia;
+  cout << alguem.nascimento.dia;
+}
+
+
+
+
+
+
+*/
