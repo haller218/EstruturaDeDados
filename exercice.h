@@ -171,7 +171,7 @@ descovery_len_poli ( int *p, int max ) {
 
 
 int 
-polindro (  ) { /// # TODO
+polindro (  ) {
 
 
   int numero;
@@ -493,7 +493,7 @@ begin_exercice (  ) {
 
   // polindro (  ); // 004 // OK
 
-  jogodavelha (  ); // 005
+  jogodavelha (  ); // 005 // OK
 
   // bolsaDeValores (  ); // 101
 
