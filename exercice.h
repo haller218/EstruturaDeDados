@@ -1,5 +1,6 @@
 // #include <stdio.h>
 #include <iostream>
+#include "BolsaDeValores"
 //#include <algorithm>
 //#include <functional>
 
@@ -460,10 +461,19 @@ testaSeJogadorGanhou (  ) {
 }
 
 
+Banco* 
+CriaBanco (  ) {
+
+  Banco news;
+
+  return news;
+}
+
+
 int 
 bolsaDeValores (  ) { // TODO
 
-
+  long unsigned time;
 
 
 
@@ -493,9 +503,9 @@ begin_exercice (  ) {
 
   // polindro (  ); // 004 // OK
 
-  jogodavelha (  ); // 005 // OK
+  // jogodavelha (  ); // 005 // OK
 
-  // bolsaDeValores (  ); // 101
+  bolsaDeValores (  ); // 101
 
   std::cout << "end" << std::endl;
 
