@@ -1,6 +1,5 @@
 // #include <stdio.h>
 #include <iostream>
-#include "BolsaDeValores"
 //#include <algorithm>
 //#include <functional>
 
@@ -460,14 +459,6 @@ testaSeJogadorGanhou (  ) {
   return 0;
 }
 
-
-Banco* 
-CriaBanco (  ) {
-
-  Banco news;
-
-  return news;
-}
 
 
 int 
