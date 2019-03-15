@@ -95,6 +95,7 @@ typedef struct Banco {
   Banco* __NextBanco;
 } Banco;
 
+
 class Helpers 
 {
 
