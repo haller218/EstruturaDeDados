@@ -12,16 +12,17 @@
 #include <string>
  
 int 
-main_main (  ) {
-
+main_asdf (  ) {
+/*
     std::string str = "Meet the new boss...";
     std::hash<std::string> hash_fn;
     std::size_t str_hash = hash_fn(str);
  
-    std::cout <<  hash_fn("Ola, Mundo!") << '\n';
+    std::cout <<  hash_fn("Ola, Mundo!") << '\n';*/
    // printf(">>>> Begin\n\n");
+    
     // main_begin();
-    // begin_exercice();
+    //begin_exercice();
 
    // printf(">>>> Finsh\n");
 
