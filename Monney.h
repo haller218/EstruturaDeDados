@@ -83,6 +83,15 @@ class Monney
     }
 
   public:
+  
+ 
+    unsigned long long int 
+    setUh ( int un ) 
+    {
+    
+      return (unsigned long long int) un;
+    }
+  
 
     unsigned int  
     genHash ( char* pass )
@@ -212,23 +221,23 @@ class Monney
       return wal;
     }
 
-    //Wallet* // TODO
-    void 
+    Wallet* // TODO
     Login ( unsigned long long int id, char* pass )
     {
 
-      
-      
+      unsigned int poss = this->genHash ( pass );
 
+      Wallet* nux = this->SearchWallet( id );
+      
+      if (nux == NULL)
+	return nux;
 
-
-      
-      
-      
-      
-      
-      // return 
+      if ( this->CheckPasswd (nux, &poss) ) {
+	
+	return nux;	
+      } else return (Wallet*) 
     }
+
 
   
 };

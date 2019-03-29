@@ -170,6 +170,24 @@ testClassBlock (  ) {
   else
     std::cout << "Nao, Encontrado" << std::endl;
 
+
+  Wallet* b = as->Login( 122, pass1 );
+
+  
+  if (b != NULL) {
+    
+    std::cout << "Id: " << (*b).id << std::endl;
+    
+    std::cout << "Login Efetuado" << std::endl; 
+    
+  } else {
+   
+    std::cout << "Login Nao Efetuado" << std::endl;
+  }
+
+
+
+
   return 0;
 }
 
