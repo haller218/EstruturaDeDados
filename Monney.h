@@ -68,14 +68,6 @@ class Monney
       return ( long double ) value;
     }
 
-    unsigned long long int 
-    IncrementTransactionCount (  ) 
-    {      
-      
-      this->countTransactions+=1;
-      return this->countTransactions;
-    }  
-
     unsigned long long int
     IncrementWallets (  )
     {
@@ -125,9 +117,12 @@ class Monney
       Wallet* nes = NULL;
       nes = new Wallet (  );
 
-      (*nes).id = this->IncrementWallets(  );
+      if ( this->Wallets != NULL ) 
+	(*nes).id = this->IncrementWallets(  );
+      
       (*nes).balance = this->setUn ( 0.0 );
       (*nes).passwd = this->genHash ( pass );
+    
       return nes;
     }
 
@@ -141,7 +136,7 @@ class Monney
       nes = new Transaction (  );
 
       (*nes).value = value;
-      (*nes).countTransaction = this->IncrementTransactionCount();
+      //      (*nes).countTransaction = this->IncrementTransactionCount();
       (*nes).__To = To;
       (*nes).__From = From;
 
@@ -165,18 +160,24 @@ class Monney
       return id;
     }
 
-    Wallet* // TODO****
+    Wallet*
     SearchWallet ( unsigned long long int id )
     {
 
       Wallet* conta = NULL;
       conta = this->Wallets;
-
-      while ( (*(conta)).id != id
-           && ( conta != NULL ) ) {
-
-        conta = (*conta).__Next;
-      }
+      
+      do {
+	
+	if (conta == NULL)
+	  break;
+	
+	if ( (*(conta)).id == id)
+	  return conta;
+	
+	conta = (*conta).__Next;
+      
+      } while ( conta != NULL ); 
 
       return conta;
     }
@@ -185,7 +186,7 @@ class Monney
     void 
     MakeTrade ( Wallet* wto
               , Wallet* wfrom
-              , long double value*/ ) 
+              , long double value ) 
     {
 
 
@@ -199,11 +200,13 @@ class Monney
       Wallet* wal = NULL;
       wal = this->MakeWallet ( (char*) passwdr );
 
-      Wallet* tempWallet = NULL
+      Wallet* tempWallet = NULL;
       tempWallet = this->Wallets;
       
+       
       this->Wallets = wal;
     
+
       (*wal).__Next = tempWallet;
 
       return wal;
@@ -214,6 +217,16 @@ class Monney
     Login ( unsigned long long int id, char* pass )
     {
 
+      
+      
+
+
+
+      
+      
+      
+      
+      
       // return 
     }
 

@@ -11,7 +11,7 @@ testClassTransactionWallet (  ) {
   
   std::cout << std::endl << "begin" << std::endl;
 
-  char passwd[64] = {"asdfasdfasdf"};
+  char passwd[] = "asdfasdfasdf";
 
   Wallet *vv = NULL, *vy = NULL, *vm = NULL;
   vm = as->MakeWallet ( passwd ); // lixo
@@ -145,9 +145,30 @@ testClassBlock (  ) {
 
   Monney* as = new Monney (  );
 
+  char pass1[] = "Values32";
+  char pass2[] = "Valuess31";
+  
+  Wallet* wm = as->CreateAcount (pass1);
+  Wallet* wb = as->CreateAcount (pass2);
+  
+  std::cout << (*wm).id << std::endl;
+  std::cout << (*wb).id << std::endl;
+  
+  for (int i = 0; i<128; i++) {
+  
+    Wallet* bb = as->CreateAcount(pass1);
+    //std::cout << (*bb).id << std::endl;      
+      
+      
+  }
 
+  unsigned long long int v = 13;
+  Wallet* finded = as->SearchWallet( v );
 
-
+  if (finded != NULL)
+    std::cout << "Encontrado: " << (*finded).id << std::endl;
+  else
+    std::cout << "Nao, Encontrado" << std::endl;
 
   return 0;
 }
