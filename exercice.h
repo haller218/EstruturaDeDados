@@ -428,20 +428,6 @@ jogodavelha (  ) {
   return 0;
 }
 
-struct compania {
-
-  char nomeCompania [30];
-  char atuacaoCompania [50];
-
-} CompaniaBolsa;
-
-struct acao {
-
-  int valor;
-  int CompaniaBolsa;
-
-} AcaoBolsa;
-
 
 int 
 testaSeJogadorGanhou (  ) {
@@ -494,9 +480,9 @@ begin_exercice (  ) {
 
   // polindro (  ); // 004 // OK
 
-  // jogodavelha (  ); // 005 // OK
+  jogodavelha (  ); // 005 // OK
 
-  bolsaDeValores (  ); // 101
+  // bolsaDeValores (  ); // 101
 
   std::cout << "end" << std::endl;
 
