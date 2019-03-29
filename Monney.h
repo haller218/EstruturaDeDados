@@ -12,6 +12,8 @@
 
   -2- Construir API de interface com o mundo externo.
 
+  -!- Criar estrutura para volume de transacoes
+
 
 #$
 ##$
@@ -145,7 +147,6 @@ class Monney
       nes = new Transaction (  );
 
       (*nes).value = value;
-      //      (*nes).countTransaction = this->IncrementTransactionCount();
       (*nes).__To = To;
       (*nes).__From = From;
 
@@ -176,17 +177,14 @@ class Monney
       Wallet* conta = NULL;
       conta = this->Wallets;
       
-      do {
-	
-	if (conta == NULL)
-	  break;
-	
+      while ( conta != NULL ) {
+		
 	if ( (*(conta)).id == id)
 	  return conta;
 	
 	conta = (*conta).__Next;
       
-      } while ( conta != NULL ); 
+      } 
 
       return conta;
     }
@@ -235,7 +233,8 @@ class Monney
       if ( this->CheckPasswd (nux, &poss) ) {
 	
 	return nux;	
-      } else return (Wallet*) 
+      } else return (Wallet*) NULL; 
+
     }
 
 

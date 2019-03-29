@@ -196,8 +196,8 @@ main (  ) {
 
 
 
-  // testStructs (  );
-  // testClassTransactionWallet (  );
+  testStructs (  );
+  testClassTransactionWallet (  );
   testClassBlock (  );
 
 
