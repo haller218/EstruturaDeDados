@@ -120,17 +120,38 @@ test_binary_read (  ) {
   std::cout << "Strct age: " << m.age << std::endl;
   std::cout << "Strct phone: " << m.phone << std::endl;
 
+  infile.close();
+
+  return 0;
+}
+
+int 
+test_nolocalAcessBinaryData_read (  ) {
+/*
+  std::ifstream infile;
+
+  Person m;
+
+  infile.open("binary.test.bin", std::ios::binary | std::ios::in );
+
+  infile. seek(12, std::ios::beg);
+  infile.read((char *)(&m), sizeof(m));
+
+  infile.close();
+*/
+
   return 0;
 }
 
 
 int 
-main (  ) {
+main_TAESrtasdgadfg (  ) {
 
   std::cout << "begin" << std::endl;
-  // test_binary_write (  );
+  test_binary_write (  );
   // test_iobin();
   test_binary_read (  );
+  // test_nolocalAcessBinaryData_read (  );
   std::cout << "end" << std::endl;
   return 0;
 }
