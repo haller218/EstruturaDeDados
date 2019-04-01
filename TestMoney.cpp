@@ -83,13 +83,10 @@ testClassTransactionWallet (  ) {
 
 /*
   std::cout << "Value id of vy : " << (*vv).id << std::endl;
-
   std::cout << "To de ff" << std::endl;
-
   std::cout << &(*(*ff).__From) << std::endl;
   std::cout << &(*vy) << std::endl;
   std::cout << (*ff).value << std::endl;
-
   std::cout << as->getCount (  ) << std::endl;
 */
   return 0;
@@ -157,8 +154,8 @@ testClassBlock (  ) {
   for (int i = 0; i<128; i++) {
   
     Account* bb = as->CreateAccount(pass1);
-    //std::cout << (*bb).id << std::endl;      
-      
+    std::cout << "Wallet : " << (*bb).id << std::endl;      
+    
       
   }
 
@@ -178,14 +175,19 @@ testClassBlock (  ) {
     
     std::cout << "Id: " << (*b).id << std::endl;
     
-    std::cout << "Login Efetuado" << std::endl; 
+    std::cout << "Login Efetuado" << std::endl;
+
+    std::cout << "Balance : " << (*b).balance << std::endl;
+
+    std::cout << "Passwd : " << (*b).passwd << std::endl;
+
+    std::cout << "PubId : " << (*b).pubId << std::endl;
+
     
   } else {
    
     std::cout << "Login Nao Efetuado" << std::endl;
   }
-
-
 
 
   return 0;
@@ -197,7 +199,7 @@ main (  ) {
 
 
   // testStructs (  );
-  //  testClassTransactionWallet (  );
+  // testClassTransactionWallet (  );
   testClassBlock (  );
 
 
