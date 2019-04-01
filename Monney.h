@@ -1,28 +1,21 @@
 #include <functional>
 #include <sstream>
 #include <string>
+#include <cmath>
+
 /*
 ##$ Classe destinada a implementar sistema de trocas por meio de 
 #$     estrutura de dados em lista
 
-
   -!- Utilizar estrutura de dados ...
-
   -1- Criar Classe de operação com arquivos padrão blockchain.
-
   -2- Construir API de interface com o mundo externo.
-
   -!- Criar estrutura para volume de transacoes
-
 
 #$
 ##$
-
-
-
 #  http://www.cplusplus.com/forum/general/37962/
 #  http://www.cplusplus.com/forum/general/37962/
-
 */
 
 #define MAX_PASS 32
@@ -101,10 +94,10 @@ class Monney
       
       while ( conta != NULL ) {
 
-	if ( (*(conta)).id == id )
-	  return conta;
-	
-	conta = (*conta).__Next;
+        if ( (*(conta)).id == id )
+          return conta;
+        
+	      conta = (*conta).__Next;
       }
       
       return conta;
@@ -119,55 +112,41 @@ class Monney
       wal = this->SearchWallet ( (*lon).id ); 
     
       if (wal == NULL)
-	return (Wallet*) NULL;
+	      return (Wallet*) NULL;
       else
       	return wal;
     }
-  
-    int Pow ( int num, int exp )
+
+    unsigned int 
+    genPubId ( unsigned long long int id, unsigned int pass )
     {
-  
-      int acu = 1;
       
-      for ( int i = 0; i < exp; i++ ) 
-	acu *= num;
+      id = std::pow ( id, 2 );
+
+      std::string idr = this->intToString ( id );
+      std::string poss = this->intToString ( pass );      
+      std::string target = idr + poss;
+       
+      char* idd = NULL;
+
+      idd = this->stringToChar ( target );
       
-      return acu;
+      return this->genHash ( idd );
     }
-  
-    int 
-    SLen ( char* str ) 
+
+    unsigned int 
+    getIdFromPub ( long int pubId ) 
     {
-    
-      int conta = 0;
-      
-      while ( str[conta] != '\0' ) {
-      
-	conta++;
-      }
-    
-      return conta;
-    }
-  
-    char* StrCopy ( char* sto, char* sfrom )
-    {
-    
-      int lenTo = this->SLen ( sto );
-      int lenFrom = this->SLen ( sfrom );
-      
-      if (lenFrom < lenTo)
-	return (char*) NULL;
-      else {
-	
-	for ( int i = 0; i < lenTo; i++ )
-	  sfrom[i] = sto[i];
-	
-	return sfrom;
+
+      for (unsigned long long int i = 0; i < this->getCountWallets (  ); i++) {
+        if ( pubId == this->genPubId ( i ) )
+          return i;
       }
 
+      return -1;
     }
-
-
+  
+  
   public:
   
  
@@ -177,41 +156,53 @@ class Monney
     
       return (unsigned long long int) un;
     }
-  
+
+    std::string
+    charToString ( char* str )  
+    {
+    
+      std::stringstream ss;
+      std::string target;
+
+      ss << str;
+      ss >> target;
+      
+      return target; 
+    }
+
+    std::string
+    intToString ( int value )
+    {
+
+      std::string s;
+      std::stringstream out;
+      out << value;
+      s = out.str();
+
+      return s;
+    }
+
+    char*
+    stringToChar ( std::string str ) 
+    {
+
+      char* fine = NULL;
+      fine =  &str[0u];
+
+      return fine; 
+    }
 
     unsigned int  
     genHash ( char* pass )
     {
      
-      std::stringstream ss;
       std::string target;
-
-      ss << pass;
-      ss >> target;
+      target = this->charToString ( pass );
 
       std::hash<std::string> hash_fn;
       std::size_t value = hash_fn(target);
 
       return (unsigned int) value;
-    }
-
-    char*
-    IntToChar ( unsigned int numero)
-    {
-      
-      char world [MAX_PASS];
-      
-      for (int i = 0; i < MAX_PASS; i++) {
-
-
-	world[i] = char ((numero%(this->Pow(10,i)*10)) -
-			 (numero%(this->Pow(10,i))) / 
-			 (this->Pow(10, i)));
-      }
-
-      world[MAX_PASS-1] = '\0';
-      
-      return world;
     }
 
     bool 
@@ -232,7 +223,7 @@ class Monney
       nes = new Wallet (  );
 
       if ( this->Wallets != NULL ) 
-	(*nes).id = this->IncrementWallets(  );
+	      (*nes).id = this->IncrementWallets(  );
       
       (*nes).balance = this->setUn ( 0.0 );
       (*nes).passwd = this->genHash ( pass );
@@ -281,7 +272,7 @@ class Monney
       nux = this->SearchWallet ( id );
       
       if ( nux == NULL)
-	return (Account*) NULL;
+	      return (Account*) NULL;
       
       Account* Acon = NULL;
       Acon = this->WalletToAccount ( nux );
@@ -293,7 +284,7 @@ class Monney
     //Transaction* // TODO
     void
     MakeTrade ( unsigned long long int idTo
-	      , char* passwdTo
+	            , char* passwdTo
               , unsigned long long int idFrom
               , char* passwdFrom ) 
     {
@@ -301,7 +292,8 @@ class Monney
 
       // return 
     }
-  
+
+
     Account*
     WalletToAccount ( Wallet* wal )
     {
@@ -313,10 +305,8 @@ class Monney
       (*Acon).passwd = (*wal).passwd;
       (*Acon).id = (*wal).id;
       
-      char* idd = this->IntToChar((*Acon).id);
-      
-      (*Acon).pubId = this->genHash( idd );
-				      
+      (*Acon).pubId = this->genPubId( (*Acon).id, (*Acon).passwd );
+
       return Acon;
     }
 
@@ -324,19 +314,19 @@ class Monney
     CreateWallet ( char* passwdr ) 
     {
 
-       Wallet* wal = NULL;
-       wal = this->MakeWallet ( (char*) passwdr );
+      Wallet* wal = NULL;
+      wal = this->MakeWallet ( (char*) passwdr );
 
-       Wallet* tempWallet = NULL;
-       tempWallet = this->Wallets;
+      Wallet* tempWallet = NULL;
+      tempWallet = this->Wallets;
       
        
-       this->Wallets = wal;
+      this->Wallets = wal;
     
 
-       (*wal).__Next = tempWallet;
+      (*wal).__Next = tempWallet;
       
-       return wal;
+      return wal;
     }
   
     Account*
@@ -362,15 +352,15 @@ class Monney
       Wallet* nux = this->SearchWallet( id );
       
       if (nux == NULL)
-	return (Account*) NULL;
+      	return (Account*) NULL;
 
       if ( this->CheckPasswd (nux, &poss) ) {
 	
-	Account* lon = NULL;
+	      Account* lon = NULL;
 	
-	lon = this->WalletToAccount ( nux );
-	
-	return lon;
+	      lon = this->WalletToAccount ( nux );
+
+	      return lon;
       } else return (Account*) NULL; 
 
     }
