@@ -37,6 +37,14 @@ struct Wallet {
   Wallet* __Next;
 };
 
+struct Account {
+  
+  unsigned long long int id;
+  long double balance;
+  unsigned int passwd;
+  unsigned int pubId;
+};
+
 struct Transaction {
 
   long double value;
@@ -84,6 +92,82 @@ class Monney
       return ((*(this->Wallets)).id);
     }
 
+    Wallet*
+    SearchWallet ( unsigned long long int id )
+    {
+    
+      Wallet* conta = NULL;
+      conta = this->Wallets;
+      
+      while ( conta != NULL ) {
+
+	if ( (*(conta)).id == id )
+	  return conta;
+	
+	conta = (*conta).__Next;
+      }
+      
+      return conta;
+    
+    }
+
+    Wallet*
+    AccountToWallet ( Account* lon )
+    {
+      
+      Wallet* wal = NULL;
+      wal = this->SearchWallet ( (*lon).id ); 
+    
+      if (wal == NULL)
+	return (Wallet*) NULL;
+      else
+      	return wal;
+    }
+  
+    int Pow ( int num, int exp )
+    {
+  
+      int acu = 1;
+      
+      for ( int i = 0; i < exp; i++ ) 
+	acu *= num;
+      
+      return acu;
+    }
+  
+    int 
+    SLen ( char* str ) 
+    {
+    
+      int conta = 0;
+      
+      while ( str[conta] != '\0' ) {
+      
+	conta++;
+      }
+    
+      return conta;
+    }
+  
+    char* StrCopy ( char* sto, char* sfrom )
+    {
+    
+      int lenTo = this->SLen ( sto );
+      int lenFrom = this->SLen ( sfrom );
+      
+      if (lenFrom < lenTo)
+	return (char*) NULL;
+      else {
+	
+	for ( int i = 0; i < lenTo; i++ )
+	  sfrom[i] = sto[i];
+	
+	return sfrom;
+      }
+
+    }
+
+
   public:
   
  
@@ -109,6 +193,25 @@ class Monney
       std::size_t value = hash_fn(target);
 
       return (unsigned int) value;
+    }
+
+    char*
+    IntToChar ( unsigned int numero)
+    {
+      
+      char world [MAX_PASS];
+      
+      for (int i = 0; i < MAX_PASS; i++) {
+
+
+	world[i] = char ((numero%(this->Pow(10,i)*10)) -
+			 (numero%(this->Pow(10,i))) / 
+			 (this->Pow(10, i)));
+      }
+
+      world[MAX_PASS-1] = '\0';
+      
+      return world;
     }
 
     bool 
@@ -170,56 +273,87 @@ class Monney
       return id;
     }
 
-    Wallet*
-    SearchWallet ( unsigned long long int id )
+    Account*
+    SearchAcount ( unsigned long long int id )
     {
-
-      Wallet* conta = NULL;
-      conta = this->Wallets;
+    
+      Wallet* nux = NULL;
+      nux = this->SearchWallet ( id );
       
-      while ( conta != NULL ) {
-		
-	if ( (*(conta)).id == id)
-	  return conta;
-	
-	conta = (*conta).__Next;
+      if ( nux == NULL)
+	return (Account*) NULL;
       
-      } 
-
-      return conta;
+      Account* Acon = NULL;
+      Acon = this->WalletToAccount ( nux );
+      
+      return Acon;
     }
 
+
     //Transaction* // TODO
-    void 
-    MakeTrade ( Wallet* wto
-              , Wallet* wfrom
-              , long double value ) 
+    void
+    MakeTrade ( unsigned long long int idTo
+	      , char* passwdTo
+              , unsigned long long int idFrom
+              , char* passwdFrom ) 
     {
 
 
       // return 
     }
-
-    Wallet* 
-    CreateAcount ( char* passwdr ) 
+  
+    Account*
+    WalletToAccount ( Wallet* wal )
     {
 
-      Wallet* wal = NULL;
-      wal = this->MakeWallet ( (char*) passwdr );
-
-      Wallet* tempWallet = NULL;
-      tempWallet = this->Wallets;
+      Account* Acon = NULL;
+      Acon = new Account (  );
       
-       
-      this->Wallets = wal;
-    
-
-      (*wal).__Next = tempWallet;
-
-      return wal;
+      (*Acon).balance = (*wal).balance;
+      (*Acon).passwd = (*wal).passwd;
+      (*Acon).id = (*wal).id;
+      
+      char* idd = this->IntToChar((*Acon).id);
+      
+      (*Acon).pubId = this->genHash( idd );
+				      
+      return Acon;
     }
 
-    Wallet* // TODO
+    Wallet* 
+    CreateWallet ( char* passwdr ) 
+    {
+
+       Wallet* wal = NULL;
+       wal = this->MakeWallet ( (char*) passwdr );
+
+       Wallet* tempWallet = NULL;
+       tempWallet = this->Wallets;
+      
+       
+       this->Wallets = wal;
+    
+
+       (*wal).__Next = tempWallet;
+      
+       return wal;
+    }
+  
+    Account*
+    CreateAccount ( char* passwdr ) 
+    {
+      
+      Wallet* wal = NULL;
+      wal = this->CreateWallet ( passwdr );
+      
+      Account* lon = NULL;
+      lon = this->WalletToAccount ( wal );
+      
+      return lon;     
+    }
+
+
+    Account* 
     Login ( unsigned long long int id, char* pass )
     {
 
@@ -228,12 +362,16 @@ class Monney
       Wallet* nux = this->SearchWallet( id );
       
       if (nux == NULL)
-	return nux;
+	return (Account*) NULL;
 
       if ( this->CheckPasswd (nux, &poss) ) {
 	
-	return nux;	
-      } else return (Wallet*) NULL; 
+	Account* lon = NULL;
+	
+	lon = this->WalletToAccount ( nux );
+	
+	return lon;
+      } else return (Account*) NULL; 
 
     }
 

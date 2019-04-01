@@ -148,30 +148,30 @@ testClassBlock (  ) {
   char pass1[] = "Values32";
   char pass2[] = "Valuess31";
   
-  Wallet* wm = as->CreateAcount (pass1);
-  Wallet* wb = as->CreateAcount (pass2);
+  Account* wm = as->CreateAccount (pass1);
+  Account* wb = as->CreateAccount (pass2);
   
   std::cout << (*wm).id << std::endl;
   std::cout << (*wb).id << std::endl;
   
   for (int i = 0; i<128; i++) {
   
-    Wallet* bb = as->CreateAcount(pass1);
+    Account* bb = as->CreateAccount(pass1);
     //std::cout << (*bb).id << std::endl;      
       
       
   }
 
   unsigned long long int v = 13;
-  Wallet* finded = as->SearchWallet( v );
+  Account* pop = as->SearchAcount( v );
 
-  if (finded != NULL)
-    std::cout << "Encontrado: " << (*finded).id << std::endl;
+  if (pop != NULL)
+    std::cout << "Encontrado: " << (*pop).id << std::endl;
   else
-    std::cout << "Nao, Encontrado" << std::endl;
+    std::cout << "Nao Encontrado" << std::endl;
 
 
-  Wallet* b = as->Login( 122, pass1 );
+  Account* b = as->Login( 122, pass1 );
 
   
   if (b != NULL) {
@@ -196,8 +196,8 @@ main (  ) {
 
 
 
-  testStructs (  );
-  testClassTransactionWallet (  );
+  // testStructs (  );
+  //  testClassTransactionWallet (  );
   testClassBlock (  );
 
 
