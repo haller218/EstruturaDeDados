@@ -66,6 +66,8 @@ testClassTransactionWallet (  ) {
   std::cout << (*ff).__From << std::endl;
   std::cout << "vy : " << vy << std::endl;
 
+  std::cout << "GroupId: > " << (unsigned int)(*ff).groupId << std::endl;
+
   std::cout << "id To ff: " << (*((*ff).__To)).id << std::endl;
 
   std::cout << "id From ff: " << (*((*ff).__From)).id << std::endl;
@@ -177,7 +179,7 @@ testClassBlock (  ) {
   for (int i = 0; i<230; i++) {
   
     Account* bb = as->CreateAccount(pass1);
-    // std::cout << "Wallet : " << (*bb).id << std::endl;      
+    // std::cout << "Wallet : " << (*bb).pubId << std::endl;      
     
   }
 
@@ -210,6 +212,26 @@ testClassBlock (  ) {
    
     std::cout << "Login Nao Efetuado" << std::endl;
   }
+
+  char ps[] = "asdfasdfasdf";
+
+  Account* p1 = as->CreateAccount( ps );
+  Account* p2 = as->CreateAccount( ps );
+
+
+
+//   as->MakeTrade((as->Login( (*p1).id, ps ))
+   //           , (as->Login( (*p2).id, ps )), 66.5);
+  
+
+  for ( int i =0; i < 22; i++ )
+    as->MakeTrade((*p1).id, ps, 66.66, (*p2).passPub,(*p2).pubId);
+
+  std::cout << "Fine" << std::endl;
+
+
+
+
 
 
   return 0;
