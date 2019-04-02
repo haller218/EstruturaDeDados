@@ -2,6 +2,7 @@
 #include <sstream>
 #include <string>
 #include <cmath>
+#include "sha256.h"
 
 /*
 ##$ Classe destinada a implementar sistema de trocas por meio de 
@@ -11,6 +12,8 @@
   -1- Criar Classe de operação com arquivos padrão blockchain.
   -2- Construir API de interface com o mundo externo.
   -!- Criar estrutura para volume de transacoes
+  -!- Implementar Multi-nivel public andress in future coin
+  -3- criar sistema de transação baseado em altenticação do enviador não das duas partes.
 
 #$
 ##$
@@ -35,11 +38,12 @@ struct Account {
   unsigned long long int id;
   long double balance;
   unsigned int passwd;
-  unsigned int pubId;
+  std::string pubId;
 };
 
 struct Transaction {
 
+  std::string idd;
   long double value;
   Wallet* __To;
   Wallet* __From; 
@@ -47,6 +51,8 @@ struct Transaction {
 
 struct Block {
 
+  std::string iddr;
+  unsigned long int idBlock;
   Transaction _Transactions[MAX_BLOCK];
   Block* __Next;
 };
@@ -111,17 +117,23 @@ class Monney
       Wallet* wal = NULL;
       wal = this->SearchWallet ( (*lon).id ); 
     
-      if (wal == NULL)
-	      return (Wallet*) NULL;
-      else
-      	return wal;
+      return wal;
     }
 
+    std::string 
+    MakePubId ( unsigned long long int id, unsigned int pass ) 
+    {
+
+      return this->shasum( this->intToString( id ) + this->intToString ( pass ) );
+    }
+
+
+    // ******* DEPRECATED ********
     unsigned int 
-    genPubId ( unsigned long long int id, unsigned int pass )
+    genPubId_old ( unsigned long long int id, unsigned int pass )
     {
       
-      id = std::pow ( id, 2 );
+      id = std::pow ( id, 3 );
 
       std::string idr = this->intToString ( id );
       std::string poss = this->intToString ( pass );      
@@ -133,17 +145,31 @@ class Monney
       
       return this->genHash ( idd );
     }
+    //=  
 
-    unsigned int 
-    getIdFromPub ( long int pubId ) 
+    long int 
+    getIdFromPub ( std::string pubId, long int pass ) 
     {
 
-      for (unsigned long long int i = 0; i < this->getCountWallets (  ); i++) {
-        if ( pubId == this->genPubId ( i ) )
+      for (unsigned long long int i = 0; i <= this->getCountWallets (  ); i++) {
+
+        if ( (this->shasum ( this->intToString ( i ) + this->intToString ( pass ) )) == pubId )
           return i;
       }
 
       return -1;
+    }
+
+    bool 
+    transferMoney ( Wallet* Operate
+                  , long double operand )
+    {
+
+      if (operand < 0)
+        if ( ! ((*Operate).balance >= (-1*(operand))) )
+          return false;
+          
+      return ((*Operate).balance += operand);
     }
   
   
@@ -182,6 +208,20 @@ class Monney
       return s;
     }
 
+
+    std::string
+    doubleToString ( long double value )
+    {
+
+      std::string s;
+      std::stringstream out;
+      out << value;
+      s = out.str();
+
+      return s;
+    }
+
+
     char*
     stringToChar ( std::string str ) 
     {
@@ -192,6 +232,8 @@ class Monney
       return fine; 
     }
 
+    // ******* DEPRECATED ********
+  // but stay where her
     unsigned int  
     genHash ( char* pass )
     {
@@ -203,6 +245,14 @@ class Monney
       std::size_t value = hash_fn(target);
 
       return (unsigned int) value;
+    }
+    //=
+
+    std::string
+    shasum ( std::string str )
+    {
+
+      return sha256 ( str );
     }
 
     bool 
@@ -240,17 +290,36 @@ class Monney
       Transaction* nes = NULL;
       nes = new Transaction (  );
 
-      (*nes).value = value;
-      (*nes).__To = To;
-      (*nes).__From = From;
+      if ( ( this->transferMoney ( To, (-1*(value)) ) )   && ( value > 0.0 )
+          ) {
 
-      return nes;
+        (*nes).value = value;
+        (*nes).__To = To;
+        (*nes).__From = From;
+
+        this->transferMoney ( From, value );
+
+        return nes;
+      } else return (Transaction*) NULL;
+
     }
 
     Block* // TODO
-    BuildBlock (  ) 
+    BuildBlock ( Wallet* To
+               , Wallet* From
+               , long double value ) 
     {
+      
       Block* bol = NULL;
+
+      if ( this->Blocks != NULL )
+        bol = this->Blocks;
+      
+      Transaction* nsc = NULL;
+
+      nsc = CreateTransaction ( To, From, value );
+
+
       
 
       return bol;
@@ -283,10 +352,10 @@ class Monney
 
     //Transaction* // TODO
     void
-    MakeTrade ( unsigned long long int idTo
-	            , char* passwdTo
-              , unsigned long long int idFrom
-              , char* passwdFrom ) 
+    MakeTrade ( unsigned long long int id
+              , char* passwd
+              , long double value
+              , std::string pubIdFrom ) 
     {
 
 
@@ -305,7 +374,7 @@ class Monney
       (*Acon).passwd = (*wal).passwd;
       (*Acon).id = (*wal).id;
       
-      (*Acon).pubId = this->genPubId( (*Acon).id, (*Acon).passwd );
+      (*Acon).pubId = this->MakePubId ( (*Acon).id, (*Acon).passwd );
 
       return Acon;
     }
