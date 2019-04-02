@@ -25,6 +25,12 @@
 
 #define MAX_BLOCK 64
 
+#define MAX_SUPPLAY 5232323232323.5
+
+#define FACTOR_DECRESS_CONST 0.5
+
+#define BEGIN_FALCET 0.002
+
 struct Wallet {
 
   unsigned long long int id;
@@ -38,22 +44,25 @@ struct Account {
   unsigned long long int id;
   long double balance;
   unsigned int passwd;
+  std::string passPub;
   std::string pubId;
 };
 
 struct Transaction {
 
   std::string idd;
+  unsigned int groupId;
   long double value;
   Wallet* __To;
-  Wallet* __From; 
+  Wallet* __From;
+  Transaction* __Next;
 };
 
 struct Block {
 
   std::string iddr;
   unsigned long int idBlock;
-  Transaction _Transactions[MAX_BLOCK];
+  Transaction* __Transactions;
   Block* __Next;
 };
 
@@ -62,6 +71,8 @@ class Monney
 {
 
   private:
+
+    long double suplay = MAX_SUPPLAY;
 
     Block* Blocks = NULL;
     Wallet* Wallets = NULL;
@@ -75,13 +86,6 @@ class Monney
     setUn ( double value ) {
 
       return ( long double ) value;
-    }
-
-    unsigned long long int
-    IncrementWallets (  )
-    {
-
-      return 1 + ((*(this->Wallets)).id);
     }
 
     unsigned long long int
@@ -107,7 +111,6 @@ class Monney
       }
       
       return conta;
-    
     }
 
     Wallet*
@@ -121,10 +124,10 @@ class Monney
     }
 
     std::string 
-    MakePubId ( unsigned long long int id, unsigned int pass ) 
+    MakePubId ( unsigned long long int id, std::string passpub ) 
     {
 
-      return this->shasum( this->intToString( id ) + this->intToString ( pass ) );
+      return this->shasum( this->intToString( id )+passpub );
     }
 
 
@@ -147,13 +150,13 @@ class Monney
     }
     //=  
 
-    long int 
-    getIdFromPub ( std::string pubId, long int pass ) 
+    unsigned long long int 
+    getIdFromPub ( std::string pubId, std::string pubpass ) 
     {
 
       for (unsigned long long int i = 0; i <= this->getCountWallets (  ); i++) {
 
-        if ( (this->shasum ( this->intToString ( i ) + this->intToString ( pass ) )) == pubId )
+        if ( (this->shasum ( this->intToString ( i ) + pubpass )) == pubId )
           return i;
       }
 
@@ -165,14 +168,99 @@ class Monney
                   , long double operand )
     {
 
+      
+      std::cout << "DE : " << (*Operate).id << " B:  " << operand << std::endl;
+      std::cout << "Su : " << (*Operate).balance << std::endl;
+
+
       if (operand < 0)
-        if ( ! ((*Operate).balance >= (-1*(operand))) )
+        if (! ((*Operate).balance >= (-1*(operand))) )
           return false;
           
       return ((*Operate).balance += operand);
     }
   
-  
+    Block*
+    makeBlock (  ) 
+    {
+
+      if ( this->Blocks != NULL )
+        return this->Blocks;
+
+      return new Block (  );
+    }
+
+    unsigned long int 
+    getCountBlock (  )
+    {
+
+      if ((this->Blocks) != NULL )
+        return (*Blocks).idBlock;
+      
+      return 0;
+    }
+
+    void 
+    setGroupIdTransactions ( unsigned int newid )
+    {
+      
+      if ( this->checkBlock (  ) )
+        if ( this->checkTransactions (  ) )
+         (*((*Blocks).__Transactions)).groupId = newid;
+    }
+
+    unsigned long int 
+    GetGroupIdTransactions (  )
+    {
+      
+      if ( this->checkBlock (  ) )
+        if ( this->checkTransactions (  ) )
+          return (*((*Blocks).__Transactions)).groupId;
+       
+      return (unsigned long int) 0;
+    } 
+
+    bool 
+    checkTransactions (  )
+    {
+
+      return ((*(this->Blocks)).__Transactions != (Transaction*)NULL);
+    }
+
+    bool 
+    IncressGroupTransaction ( Transaction* tr ) 
+    {
+
+      return (*tr).groupId = (this->GetGroupIdTransactions()+1);
+    }
+
+    bool 
+    checkBlock (  ) 
+    {
+
+      return ((this->Blocks) != NULL );
+    }
+
+    bool 
+    SalveTransactions ( Transaction* trans )
+    {
+
+      if ( this->checkBlock (  ) )
+        if ( this->checkTransactions (  ) ) {
+
+
+          (*trans).__Next = (*this->Blocks).__Transactions;
+
+          this->IncressGroupTransaction ( trans );
+
+          (*this->Blocks).__Transactions = trans;
+
+        };
+
+      return true;
+    }
+
+
   public:
   
  
@@ -273,9 +361,9 @@ class Monney
       nes = new Wallet (  );
 
       if ( this->Wallets != NULL ) 
-	      (*nes).id = this->IncrementWallets(  );
+	      (*nes).id = (1 + this->getCountWallets (  ));
       
-      (*nes).balance = this->setUn ( 0.0 );
+      (*nes).balance = this->setUn ( 1000000.0 );
       (*nes).passwd = this->genHash ( pass );
     
       return nes;
@@ -309,20 +397,30 @@ class Monney
                , Wallet* From
                , long double value ) 
     {
-      
+
       Block* bol = NULL;
 
-      if ( this->Blocks != NULL )
-        bol = this->Blocks;
+      std::cout << "bLOCK" << std::endl;
+
+      bol = this->makeBlock (  );
       
       Transaction* nsc = NULL;
 
       nsc = CreateTransaction ( To, From, value );
 
+      if ( ( this->SalveTransactions ( nsc ) ) ) {
 
+        (*bol).idBlock = (this->getCountBlock (  )+1);
+
+        if ( this->SaveBlock ( bol ) )
+          if ( this->GetGroupIdTransactions() > 64 )
+            this->setGroupIdTransactions ((unsigned int) 0 );
+
+        return bol;
+            
+      }      
       
-
-      return bol;
+      return (Block*) NULL;
     }
 
     unsigned long long int // TODO 
@@ -350,16 +448,51 @@ class Monney
     }
 
 
-    //Transaction* // TODO
-    void
+    bool
+    SaveBlock ( Block* bb )
+    {
+
+      std::cout << "asdfasdf : " << this->GetGroupIdTransactions (  ) << std::endl;
+      if ( this->GetGroupIdTransactions (  ) > 64) {
+
+        if ( this->checkBlock (  ) ) {
+          (*bb).__Next = (this->Blocks);
+
+          std::cout << "########### bLOCK" << std::endl;
+
+          (*this->Blocks).__Next = bb;
+        } return true;
+      } return false;
+    }
+
+
+    bool // TODO*
     MakeTrade ( unsigned long long int id
               , char* passwd
               , long double value
+              , std::string frompasspub
               , std::string pubIdFrom ) 
     {
 
+      Account* non = NULL;
+      non = this->Login ( id, passwd );
 
-      // return 
+      if ( non != NULL ) {
+
+        Wallet* From = NULL;
+
+        From = this->SearchWallet ( this->getIdFromPub ( pubIdFrom, frompasspub ) );
+
+        Wallet* To = NULL;
+
+        To = this->SearchWallet ( (*non).id );
+
+        Block* now = NULL;
+
+        now = this->BuildBlock ( To, From, value );
+
+        return true;
+      } else return false;
     }
 
 
@@ -374,7 +507,15 @@ class Monney
       (*Acon).passwd = (*wal).passwd;
       (*Acon).id = (*wal).id;
       
-      (*Acon).pubId = this->MakePubId ( (*Acon).id, (*Acon).passwd );
+      (*Acon).pubId = this->MakePubId ( (*Acon).id
+            , this->shasum ( 
+                this->intToString ( (*Acon).passwd )
+            ) );
+
+      (*Acon).passPub = this->shasum ( 
+          this->intToString (
+            (*Acon).passwd
+          ) );
 
       return Acon;
     }
