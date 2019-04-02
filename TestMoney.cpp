@@ -12,24 +12,43 @@ testClassTransactionWallet (  ) {
   std::cout << std::endl << "begin" << std::endl;
 
   char passwd[] = "asdfasdfasdf";
-
+  /// ****** DEPRECATED ******
   Wallet *vv = NULL, *vy = NULL, *vm = NULL;
   vm = as->MakeWallet ( passwd ); // lixo
   vv = as->MakeWallet ( passwd ); // to
   vy = as->MakeWallet ( passwd ); // from
-  
+  (*vy).id += 1;
 
   long double values = 111111111111.65;
 
   Transaction* ff;
 
   std::cout << "id vv " << (*vv).id << std::endl;
+
+  (*vv).balance = 6666666066666.66;
+
+  std::cout << "Balance vv : " << (*vv).balance << std::endl;
+  std::cout << "Balance vy : " << (*vy).balance << std::endl;
   std::cout << "id vy "<< (*vy).id << std::endl;
 
   /////// ******
                  /// to, from, value
-   ff = as->CreateTransaction(vv,vy, values);
+  ff = as->CreateTransaction(vv,vy, values);
+
+  std::cout << "Transacionando : 128 : " << values << std::endl;
+
+  for (int i = 0; i < 128; i++) {
   
+    Transaction* fv = as->CreateTransaction(vv,vy, values);
+
+    // std::cout << "Contagem -T- : " << i << std::endl;
+
+    if ( fv == (Transaction*) NULL) {
+
+        std::cout << "Transacao negada." << std::endl;
+        break;
+    }
+  }
 
   std::cout << std::endl;
   std::cout << "vv : " << vv << std::endl;
@@ -50,6 +69,10 @@ testClassTransactionWallet (  ) {
   std::cout << "id To ff: " << (*((*ff).__To)).id << std::endl;
 
   std::cout << "id From ff: " << (*((*ff).__From)).id << std::endl;
+
+
+  std::cout << "Balance vy : " << (*vy).balance << std::endl;
+  std::cout << "Balance vv : " << (*vv).balance << std::endl;
 
   std::cout << std::endl;
 
@@ -151,24 +174,23 @@ testClassBlock (  ) {
   std::cout << (*wm).id << std::endl;
   std::cout << (*wb).id << std::endl;
   
-  for (int i = 0; i<128; i++) {
+  for (int i = 0; i<230; i++) {
   
     Account* bb = as->CreateAccount(pass1);
-    std::cout << "Wallet : " << (*bb).id << std::endl;      
+    // std::cout << "Wallet : " << (*bb).id << std::endl;      
     
-      
   }
 
-  unsigned long long int v = 13;
+  unsigned long long int v = 199;
   Account* pop = as->SearchAcount( v );
 
-  if (pop != NULL)
+  if (pop != NULL) {
     std::cout << "Encontrado: " << (*pop).id << std::endl;
-  else
+    std::cout << "Pub : " << (*pop).pubId << std::endl << std::endl;
+  } else
     std::cout << "Nao Encontrado" << std::endl;
 
-
-  Account* b = as->Login( 122, pass1 );
+  Account* b = as->Login( 200, pass1 );
 
   
   if (b != NULL) {
@@ -197,9 +219,8 @@ int
 main (  ) {
 
 
-
-  // testStructs (  );
-  // testClassTransactionWallet (  );
+  testStructs (  );
+  testClassTransactionWallet (  );
   testClassBlock (  );
 
 
