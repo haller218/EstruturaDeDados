@@ -14,6 +14,8 @@
   -!- Criar estrutura para volume de transacoes
   -!- Implementar Multi-nivel public andress in future coin
   -3- criar sistema de transação baseado em altenticação do enviador não das duas partes.
+  -!- Somar o id do cliente com numero randomico para gerar chave publica, ocasionalmente mudar codigo para percorrer ids.
+
 
 #$
 ##$
@@ -76,11 +78,6 @@ class Monney
 
     Block* Blocks = NULL;
     Wallet* Wallets = NULL;
-
-    // ******* DEPRECATED ********
-    unsigned long long int countTransactions;
-    unsigned long int countBlocks;
-    //=
 
     long double 
     setUn ( double value ) {
@@ -168,11 +165,6 @@ class Monney
                   , long double operand )
     {
 
-      
-      std::cout << "DE : " << (*Operate).id << " B:  " << operand << std::endl;
-      std::cout << "Su : " << (*Operate).balance << std::endl;
-
-
       if (operand < 0)
         if (! ((*Operate).balance >= (-1*(operand))) )
           return false;
@@ -216,7 +208,7 @@ class Monney
       if ( this->checkBlock (  ) )
         if ( this->checkTransactions (  ) )
           return (*((*Blocks).__Transactions)).groupId;
-       
+
       return (unsigned long int) 0;
     } 
 
@@ -245,9 +237,7 @@ class Monney
     SalveTransactions ( Transaction* trans )
     {
 
-      if ( this->checkBlock (  ) )
-        if ( this->checkTransactions (  ) ) {
-
+      if ( this->checkBlock (  ) ) {
 
           (*trans).__Next = (*this->Blocks).__Transactions;
 
@@ -255,7 +245,7 @@ class Monney
 
           (*this->Blocks).__Transactions = trans;
 
-        };
+      }
 
       return true;
     }
@@ -363,7 +353,7 @@ class Monney
       if ( this->Wallets != NULL ) 
 	      (*nes).id = (1 + this->getCountWallets (  ));
       
-      (*nes).balance = this->setUn ( 1000000.0 );
+      (*nes).balance = this->setUn ( 1110.0 );
       (*nes).passwd = this->genHash ( pass );
     
       return nes;
@@ -378,7 +368,8 @@ class Monney
       Transaction* nes = NULL;
       nes = new Transaction (  );
 
-      if ( ( this->transferMoney ( To, (-1*(value)) ) )   && ( value > 0.0 )
+      if ( ( this->transferMoney ( To, (-1*(value)) ) )
+            && ( value > 0.0 )
           ) {
 
         (*nes).value = value;
@@ -412,9 +403,7 @@ class Monney
 
         (*bol).idBlock = (this->getCountBlock (  )+1);
 
-        if ( this->SaveBlock ( bol ) )
-          if ( this->GetGroupIdTransactions() > 64 )
-            this->setGroupIdTransactions ((unsigned int) 0 );
+
 
         return bol;
             
@@ -451,9 +440,8 @@ class Monney
     bool
     SaveBlock ( Block* bb )
     {
-
-      std::cout << "asdfasdf : " << this->GetGroupIdTransactions (  ) << std::endl;
-      if ( this->GetGroupIdTransactions (  ) > 64) {
+      
+      if ( this->GetGroupIdTransactions (  ) > MAX_BLOCK) {
 
         if ( this->checkBlock (  ) ) {
           (*bb).__Next = (this->Blocks);
