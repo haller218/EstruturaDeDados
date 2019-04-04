@@ -224,7 +224,7 @@ testClassBlock (  ) {
    //           , (as->Login( (*p2).id, ps )), 66.5);
   
 
-  for ( int i =0; i < 22; i++ )
+  for ( int i =0; i < 222; i++ )
     as->MakeTrade((*p1).id, ps, 66.66, (*p2).passPub,(*p2).pubId);
 
   std::cout << "Fine" << std::endl;
@@ -241,8 +241,8 @@ int
 main (  ) {
 
 
-  testStructs (  );
-  testClassTransactionWallet (  );
+  // testStructs (  );
+  // testClassTransactionWallet (  );
   testClassBlock (  );
 
 
