@@ -2,6 +2,10 @@
 #include <sstream>
 #include <string>
 #include <cmath>
+
+#include <cstdlib> 
+#include <ctime> 
+
 #include "sha256.h"
 
 /*
@@ -27,6 +31,8 @@
 
 #define MAX_BLOCK 64
 
+#define MAX_RAND_KEY 3232323
+
 #define MAX_SUPPLAY 5232323232323.5
 
 #define FACTOR_DECRESS_CONST 0.5
@@ -38,6 +44,7 @@ struct Wallet {
   unsigned long long int id;
   long double balance;
   unsigned int passwd;
+  int rand;
   Wallet* __Next;
 };
 
@@ -46,7 +53,7 @@ struct Account {
   unsigned long long int id;
   long double balance;
   unsigned int passwd;
-  std::string passPub;
+  int rand;
   std::string pubId;
 };
 
@@ -78,6 +85,8 @@ class Monney
 
     Block* Blocks = NULL;
     Wallet* Wallets = NULL;
+
+    bool randoness = true;
 
     long double 
     setUn ( double value ) {
@@ -121,12 +130,28 @@ class Monney
     }
 
     std::string 
-    MakePubId ( unsigned long long int id, std::string passpub ) 
+    MakePubId ( unsigned long long int id, int rand ) 
     {
 
-      return this->shasum( this->intToString( id )+passpub );
+      return this->shasum( this->intToString( id ) + this->intToString ( rand ) );
     }
 
+    void 
+    SeedRandom (  )
+    {
+
+      this->randoness = false;
+      srand ( ( unsigned ) time ( 0 ) );
+    }
+
+    size_t 
+    getRandom ( int range = 10 ) 
+    {
+      if ( this->randoness )
+        this->SeedRandom (  );
+
+      return ((rand()%range)+1); 
+    }
 
     // ******* DEPRECATED ********
     unsigned int 
@@ -148,16 +173,21 @@ class Monney
     //=  
 
     unsigned long long int 
-    getIdFromPub ( std::string pubId, std::string pubpass ) 
+    getIdFromPub ( std::string pubId ) 
     {
 
-      for (unsigned long long int i = 0; i <= this->getCountWallets (  ); i++) {
+      Wallet* conta = NULL;
+      conta = this->Wallets;
+      
+      while ( conta != NULL ) {
 
-        if ( (this->shasum ( this->intToString ( i ) + pubpass )) == pubId )
-          return i;
+        if ( this->MakePubId ( (*conta).id
+            , (*conta).rand ) == pubId )
+          return (*conta).id;
+        
+	      conta = (*conta).__Next;
       }
-
-      return -1;
+      return 0;
     }
 
     bool 
@@ -252,8 +282,8 @@ class Monney
 
 
   public:
-  
- 
+
+
     unsigned long long int 
     setUh ( int un ) 
     {
@@ -351,9 +381,10 @@ class Monney
       nes = new Wallet (  );
 
       if ( this->Wallets != NULL ) 
-	      (*nes).id = (1 + this->getCountWallets (  ));
+	      (*nes).id = ( 1 + this->getCountWallets (  ) );
       
-      (*nes).balance = this->setUn ( 1110.0 );
+      (*nes).balance = this->setUn ( 0.0 );
+      (*nes).rand = this->getRandom ( MAX_RAND_KEY );
       (*nes).passwd = this->genHash ( pass );
     
       return nes;
@@ -458,7 +489,6 @@ class Monney
     MakeTrade ( unsigned long long int id
               , char* passwd
               , long double value
-              , std::string frompasspub
               , std::string pubIdFrom ) 
     {
 
@@ -469,7 +499,7 @@ class Monney
 
         Wallet* From = NULL;
 
-        From = this->SearchWallet ( this->getIdFromPub ( pubIdFrom, frompasspub ) );
+        From = this->SearchWallet ( this->getIdFromPub ( pubIdFrom ) );
 
         Wallet* To = NULL;
 
@@ -493,17 +523,11 @@ class Monney
       
       (*Acon).balance = (*wal).balance;
       (*Acon).passwd = (*wal).passwd;
+      (*Acon).rand = (*wal).rand;
       (*Acon).id = (*wal).id;
       
       (*Acon).pubId = this->MakePubId ( (*Acon).id
-            , this->shasum ( 
-                this->intToString ( (*Acon).passwd )
-            ) );
-
-      (*Acon).passPub = this->shasum ( 
-          this->intToString (
-            (*Acon).passwd
-          ) );
+            , (*Acon).rand );
 
       return Acon;
     }
@@ -563,6 +587,13 @@ class Monney
 
     }
 
+  /// while to understand saveblock
+    Wallet*
+    SearchWalletPub ( unsigned long long int id )
+    {
+
+      return this->SearchWallet ( id );
+    }
 
   
 };
