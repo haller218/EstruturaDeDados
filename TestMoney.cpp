@@ -203,6 +203,8 @@ testClassBlock (  ) {
 
     std::cout << "Balance : " << (*b).balance << std::endl;
 
+    std::cout << "Rand: " << (*b).rand << std::endl;
+
     std::cout << "Passwd : " << (*b).passwd << std::endl;
 
     std::cout << "PubId : " << (*b).pubId << std::endl;
@@ -225,7 +227,7 @@ testClassBlock (  ) {
   
 
   for ( int i =0; i < 222; i++ )
-    as->MakeTrade((*p1).id, ps, 66.66, (*p2).passPub,(*p2).pubId);
+    as->MakeTrade((*p1).id, ps, 66.66, (*p2).pubId);
 
   std::cout << "Fine" << std::endl;
 
