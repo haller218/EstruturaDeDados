@@ -1,6 +1,42 @@
 #include <iostream>
 #include "Monney.h"
+#include <cmath>
 #include <fstream>
+#include <cstdlib> 
+#include <ctime> 
+
+
+
+void 
+test_Daath_Row ( int digi ) {
+
+  std::string buf = "";
+  char str[20];
+
+  std::cout << buf << std::endl;
+}
+
+
+
+void 
+test_MathFunctions (  ) {
+
+
+  unsigned long long int a = 339;
+
+  char b = a;
+
+  char c = (char)a;
+
+  int d = (int)b;
+
+  int e = a & 0xff;
+
+  std::cout << a << " " << b << " " << c << " " << d << " " << e << std::endl;
+
+  std::cout << std::pow(a,7) << std::endl;
+
+}
 
 
 int 
@@ -145,14 +181,37 @@ test_nolocalAcessBinaryData_read (  ) {
 
 
 int 
-main_TAESrtasdgadfg (  ) {
+RandomTest (  ) {
+
+  srand((unsigned)time(0)); 
+  int i;
+  for (int j = 0; j < 60; j++) {
+   
+    i = (rand()%9)+1; 
+    std::cout << i << "\n"; 
+  }
+
+  return 0;
+}
+
+
+int 
+main_ASDFtasdianofkjas (  ) {
 
   std::cout << "begin" << std::endl;
-  test_binary_write (  );
+  /* test_binary_write (  );
   // test_iobin();
   test_binary_read (  );
   // test_nolocalAcessBinaryData_read (  );
+  */
+
+  // test_MathFunctions (  );
+  RandomTest (  );
+
+  test_Daath_Row (64); 
+
   std::cout << "end" << std::endl;
+  
   return 0;
 }
 
